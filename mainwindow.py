@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 import sys
 from process import Process
+from widget_update import Widget
 
-class App(tk.Tk):
+class App(tk.Tk, Widget):
 
     def __init__(self):
         tk.Tk.__init__(self)
@@ -16,6 +17,7 @@ class App(tk.Tk):
         self.cpu = Process()
         self.set_ui()
         self.Cpu_usage_bar()
+        self.configurate_cpu_bar()
 
     def set_ui(self):
         exit_button = ttk.Button(self, text='Exit', command=self.app_exit)
@@ -29,7 +31,7 @@ class App(tk.Tk):
         self.combobox.pack(side=tk.LEFT)
 
 
-        ttk.Button(self.frame1, text='move').pack(side=tk.LEFT)
+        ttk.Button(self.frame1, text='move', command=self.configure_window).pack(side=tk.LEFT)
         ttk.Button(self.frame1, text='>>>').pack(side=tk.LEFT)
 
         self.frame2 = ttk.LabelFrame(self, text='Power')
@@ -51,6 +53,12 @@ class App(tk.Tk):
         for i in range(self.cpu.cpu_count_logical):
             self.list_label[i].pack(fill=tk.X)
             self.list_progressbar[i].pack(fill=tk.X)
+
+
+        self.ram_label = ttk.Label(self.frame2, text='', anchor=tk.CENTER)
+        self.ram_label.pack(fill=tk.X)
+        self.ram_bar = ttk.Progressbar(self.frame2, length=100)
+        self.ram_bar.pack(fill=tk.X)
 
 
     def enter_mouse(self, event):
