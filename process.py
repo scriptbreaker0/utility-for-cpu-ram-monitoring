@@ -15,12 +15,8 @@ class Process():
         return pt.virtual_memory()
     
     def cpu_total_load(self):
-        return pt.cpu_percent()
+        return pt.cpu_percent(interval=None, percpu=False)
     
     def get_cpu_frequency_max(self):
         return pt.cpu_freq(percpu=False)
     
-
-# x = Process()
-# for i in range(1,100):
-#     print(x.cpu_frequency_total())
