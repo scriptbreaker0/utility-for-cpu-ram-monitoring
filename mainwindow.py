@@ -8,13 +8,16 @@ class App(tk.Tk, Widget):
 
     def __init__(self):
         tk.Tk.__init__(self)
-        self.attributes('-alpha', 0.8)
+        self.attributes('-alpha', 1)
         self.attributes('-topmost', True)
         self.overrideredirect(True)
         self.resizable(False, False)
         self.title('CPU-RAM')
 
         self.cpu = Process()
+        self.run_set_ui()
+
+    def run_set_ui(self):
         self.set_ui()
         self.Cpu_usage_bar()
         self.configurate_cpu_bar()
@@ -39,9 +42,11 @@ class App(tk.Tk, Widget):
 
         self.bind_class('Tk', '<Enter>', self.enter_mouse)
         self.bind_class('Tk', '<Leave>', self.leave_mouse)
+        self.combobox.bind('<<ComboboxSelected>>', self.choise_combo)
 
     def Cpu_usage_bar(self):
-        ttk.Label(self.frame2, text=f'Physical cores: {self.cpu.cpu_count}, logical cores: {self.cpu.cpu_count_logical}',
+        ttk.Label(self.frame2, text=f'Physical cores: {self.cpu.cpu_count}, logical cores: {self.cpu.cpu_count_logical}\
+                  \nMax frequency: {self.cpu.get_cpu_frequency_max()[2]} GHz',
                     anchor=tk.CENTER).pack(fill=tk.X)
         
         self.list_label = []
@@ -60,6 +65,37 @@ class App(tk.Tk, Widget):
         self.ram_bar = ttk.Progressbar(self.frame2, length=100)
         self.ram_bar.pack(fill=tk.X)
 
+    def create_full_window(self):
+        self.after_cancel(self.wheel)
+        self.clear_window()
+        self.update()
+        self.run_set_ui()
+        self.enter_mouse('')
+        self.combobox.current(1)
+
+    def create_minimal_mod(self):
+
+        self.frame1 = ttk.LabelFrame(self, text='CPU')
+        self.frame1.pack(fill=tk.X)
+
+        self.frame2 = ttk.LabelFrame(self, text='RAM')
+        self.frame2.pack(fill=tk.X)
+
+
+        self.cpu_min = ttk.Progressbar(self.frame1, length=100)
+        self.cpu_min.pack(side=tk.LEFT)
+
+        self.ram_min = ttk.Progressbar(self.frame2, length=100)
+        self.ram_min.pack(side=tk.LEFT)
+
+
+
+        ttk.Button(self, text='full',command=self.create_full_window, width=5).pack(side=tk.RIGHT)
+
+        ttk.Button(self, text='move',command=self.configure_window, width=5).pack(side=tk.RIGHT)
+
+        self.update()
+        self.configure_minimal_window()
 
     def enter_mouse(self, event):
         if self.combobox.current() == 0 or 1:
@@ -69,6 +105,21 @@ class App(tk.Tk, Widget):
     def leave_mouse(self, event):
         if self.combobox.current() == 0:
             self.geometry(f'{self.winfo_width()}x1')
+
+
+    def choise_combo(self, event):
+        if self.combobox.current() == 2:
+            self.enter_mouse('')
+            self.unbind_class('Tk','<Enter>')
+            self.unbind_class('Tk','<Leave>')
+            self.combobox.unbind('<<ComboboxSelected>>')
+            self.after_cancel(self.wheel)
+            self.clear_window()
+            self.update()
+            self.create_minimal_mod()
+
+
+    
     def app_exit(self):
         self.destroy()
         sys.exit()

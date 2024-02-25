@@ -23,3 +23,17 @@ class Widget:
         else:
             self.overrideredirect(True)
         self.update()
+
+
+    def clear_window(self):
+        for i in self.winfo_children():
+            i.destroy()
+
+
+    def configure_minimal_window(self):
+        self.cpu_min.configure(value=self.cpu.cpu_total_load())
+        self.ram_min.configure(value=self.cpu.ram_load_percent()[2])
+        self.frame1.configure(text=f'CPU {self.cpu.cpu_total_load()} %')
+        self.frame2.configure(text=f'RAM available:{round(self.cpu.ram_load_percent()[1]/1048576)} Mb\
+                              \nUsed: {self.cpu.ram_load_percent()[2]} %')
+        self.wheel = self.after(1000, self.configure_minimal_window)
