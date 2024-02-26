@@ -36,7 +36,7 @@ class App(tk.Tk, Widget):
 
         ttk.Button(self.frame1, text='move', command=self.configure_window).pack(side=tk.LEFT)
         #ttk.Button(self.frame1, text='Empty').pack(side=tk.LEFT)
-        #in developing...
+        #in developing....
 
         self.frame2 = ttk.LabelFrame(self, text='Power')
         self.frame2.pack(fill=tk.BOTH)
